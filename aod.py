@@ -1,5 +1,3 @@
-# Usage: aod.py filename.png [systemPixels]
-# systemPixels is overlayed icons that are displayed by the OS. 'No bluetooth' is 346 pixels at 384x384 and 454x454.
 # Adapted from code by Grégoire Sage.
 
 import argparse
@@ -8,13 +6,13 @@ import sys
 from PIL import Image
 
 WATCHFACE_DIMENSIONS = 450  # height and width from watchface.xml
-bleedFactor = 1
 AMBIENT_LIMIT = 0.15    # proportion of shape area that can be non-black
-areaBlackSystem = 0     # assume 'no bluetooth' icon, and no significant overlap
+bleedFactor = 1.0       # factor by which area of all-white circle exceeds pi*r^2
+areaBlackSystem = 0     # exta px for 'no bluetooth' icon with no significant overlap
 
 def calcOPR(width, scale, shapeName, areaBlackWatchface, areaShape, intensity):
     print(f"Shape is {shapeName}")
-    print(f"Image area is {round(areaShape)} pixels")
+    print(f"Image area (with bleed) is {round(areaShape)} pixels")
     if FRACTIONAL_INTENSITY:
         print("Average intensity is {:.2f}%".format(intensity / 1950.75 / areaShape)) # 1950.75 = (255*3)*255/100
         maxIntensity = AMBIENT_LIMIT * areaShape    # number of full-intensity px
@@ -35,11 +33,6 @@ parser.add_argument('-n', action="store_true", help='consider all non-black pixe
 parser.add_argument('-b', type=float, help='bleed factor')
 parser.add_argument('-c', action="store_true", help='calculate bleed factor from white circle')
 args = parser.parse_args()
-#print(f"source=[{args.source}]")
-#print(f"s=[{args.s}]")
-#print(f"n=[{args.n}]")
-#print(f"b=[{args.b}]")
-#print(f"c=[{args.c}]")
 
 FRACTIONAL_INTENSITY = args.n == False    # whether to display stats for partial illumination rather than black vs. non-black
 
@@ -105,7 +98,7 @@ print(f"Bleed factor is {bleedFactor}")
 print(f"Top left pixel is {pixels[0]}")
 
 if FRACTIONAL_INTENSITY:
-    print(f"Total intensity is {intensity}")
+    print(f"Total intensity Σ(R+G+B)A is {intensity}")
 else:
     print(f"Black area (total) is {round(areaBlackTotal)} pixels")
     print(f"Non-black area (system) is {round(areaBlackSystem)} pixels")

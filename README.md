@@ -2,6 +2,11 @@
 
 Command-line tool for estimating AOD compliance of [Wear OS Watch Face Format](https://developer.android.com/training/wearables/wff) screenshots or mockups.
 
+## Prerequisites
+
+* A reasonably recent [Python](https://www.python.org/downloads/) installation.
+* Python's `pillow` extension (install with `pip install pillow`).
+
 ## Usage
 
 aod.py [-h] [-s] [-n] [-b B] [-c] source

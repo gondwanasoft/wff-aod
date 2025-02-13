@@ -5,18 +5,24 @@ Command-line tool for estimating AOD compliance of [Wear OS Watch Face Format](h
 ## Prerequisites
 
 * A reasonably recent [Python](https://www.python.org/downloads/) installation.
+
 * Python's `pillow` extension (install with `pip install pillow`).
+
+* To capture screenshots using `adb`, the `adb` executable needs to be accessible via the `PATH` environment variable, or via the `ANDROID_HOME` environment variable (in subdirectory `platform-tools`).
 
 ## Usage
 
-aod.py [-h] [-s] [-n] [-b B] [-c] source
+aod.py aod.py [-h] [-s] [-n] [-b B] [-c] [-v] [source]
 
-    source      filename (.png)
+    source      filename (.png); if unspecified, capture from adb
     -s          watchface is square (default: round)
     -n          consider all non-black pixels to be fully used
     -b B        bleed factor
     -c          calculate bleed factor from white circle
     -h, --help  show this help message and exit
+    -v          show program's version number and exit
+
+If `source` is unspecified, `aod.py` will attempt to capture a screenshot from a connected device/emulator using `adb`. If it succeeds, the screenshot will be saved as `adb.png`. You can inspect that image to verify that the correct screenshot was obtained. `adb.png` will be overwritten when required; if you want to keep any such image, move/copy/rename it before rerunning `aod.py`.
 
 ## Assumptions
 

@@ -2,6 +2,9 @@
 
 import argparse
 import math
+import os
+import shutil
+import subprocess
 import sys
 from PIL import Image
 
@@ -27,12 +30,28 @@ def calcOPR(width, scale, shapeName, areaBlackWatchface, areaShape, intensity):
         print("At {}×{}, {} limit by {:.0f} white pixels; ie, about {:.1f} square".format(WATCHFACE_DIMENSIONS, WATCHFACE_DIMENSIONS, overUnder, overLimit/scale, math.sqrt(overLimit/scale)))
 
 parser = argparse.ArgumentParser(description='Assess AOD of Wear OS screenshot.')
-parser.add_argument('source', help='filename (.png)')
+parser.add_argument('source', nargs='?', default=None, help='filename (.png); if unspecified, capture from adb')
 parser.add_argument('-s', action="store_true", help='watchface is square (default: round)')
 parser.add_argument('-n', action="store_true", help='consider all non-black pixels to be fully used')
 parser.add_argument('-b', type=float, help='bleed factor')
 parser.add_argument('-c', action="store_true", help='calculate bleed factor from white circle')
+parser.add_argument('-v', action='version', version='%(prog)s 1.1')
 args = parser.parse_args()
+
+if args.source == None:     # filename not specified; try to get one from adb
+    if os.path.isfile('adb.png'): os.remove('adb.png')  # delete previous adb.png, if any
+    adb_path = ''   # path to adb.exe
+    if shutil.which('adb.exe') is None:
+        android_home = os.getenv('ANDROID_HOME')
+        if android_home == None:
+            print("Error: can't find adb.exe")
+            exit(1)
+        adb_path = android_home + '/platform-tools/'
+    completedProcess = subprocess.run(f'{adb_path}adb exec-out screencap -p > adb.png', shell=True) # shell=True for output redirection
+    if completedProcess.returncode != 0:
+        print('Error: unable to capture screenshot via adb')
+        exit(1)
+    args.source = 'adb.png'
 
 FRACTIONAL_INTENSITY = args.n == False    # whether to display stats for partial illumination rather than black vs. non-black
 

@@ -15,6 +15,7 @@ Command-line tool for estimating AOD compliance of [Wear OS Watch Face Format](h
 aod.py aod.py [-h] [-s] [-n] [-b B] [-c] [-v] [source]
 
     source      filename (.png); if unspecified, capture from adb
+    -d          display diagnostic information
     -s          watchface is square (default: round)
     -n          consider all non-black pixels to be fully used
     -b B        bleed factor

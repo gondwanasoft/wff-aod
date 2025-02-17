@@ -14,8 +14,9 @@ bleedFactor = 1.0       # factor by which area of all-white circle exceeds pi*r^
 areaBlackSystem = 0     # exta px for 'no bluetooth' icon with no significant overlap
 
 def calcOPR(width, scale, shapeName, areaBlackWatchface, areaShape, intensity):
-    print(f"Shape is {shapeName}")
-    print(f"Image area (with bleed) is {round(areaShape)} pixels")
+    if args.d:
+        print(f"Shape is {shapeName}")
+        print(f"Image area (with bleed) is {round(areaShape)} pixels")
     if FRACTIONAL_INTENSITY:
         print("Average intensity is {:.2f}%".format(intensity / 1950.75 / areaShape)) # 1950.75 = (255*3)*255/100
         maxIntensity = AMBIENT_LIMIT * areaShape    # number of full-intensity px
@@ -31,11 +32,12 @@ def calcOPR(width, scale, shapeName, areaBlackWatchface, areaShape, intensity):
 
 parser = argparse.ArgumentParser(description='Assess AOD of Wear OS screenshot.')
 parser.add_argument('source', nargs='?', default=None, help='filename (.png); if unspecified, capture from adb')
+parser.add_argument('-d', action="store_true", help='display diagnostic information')
 parser.add_argument('-s', action="store_true", help='watchface is square (default: round)')
 parser.add_argument('-n', action="store_true", help='consider all non-black pixels to be fully used')
 parser.add_argument('-b', type=float, help='bleed factor')
 parser.add_argument('-c', action="store_true", help='calculate bleed factor from white circle')
-parser.add_argument('-v', action='version', version='%(prog)s 1.1')
+parser.add_argument('-v', action='version', version='%(prog)s 1.2')
 args = parser.parse_args()
 
 if args.source == None:     # filename not specified; try to get one from adb
@@ -111,18 +113,18 @@ areaCircle *= bleedFactor
 
 areaCropped = areaSquare - areaCircle   # assume all pixels outside circle are black
 
-print(f"Image size is {im.width}×{im.height} pixels")
-print(f"Format is {'RGB' if len(pixels[0])==3 else 'RGBA'}")
-print(f"Bleed factor is {bleedFactor}")
-print(f"Top left pixel is {pixels[0]}")
-
-if FRACTIONAL_INTENSITY:
-    print(f"Total intensity Σ(R+G+B)A is {intensity}")
-else:
-    print(f"Black area (total) is {round(areaBlackTotal)} pixels")
-    print(f"Non-black area (system) is {round(areaBlackSystem)} pixels")
-    print(f"Black area (watchface) is {round(areaBlackWatchface)} pixels")
-    print(f"Non-black area (watchface) is {round(areaNonBlackWatchface)} pixels")
+if args.d:
+    print(f"Image size is {im.width}×{im.height} pixels")
+    print(f"Format is {'RGB' if len(pixels[0])==3 else 'RGBA'}")
+    print(f"Bleed factor is {bleedFactor}")
+    print(f"Top left pixel is {pixels[0]}")
+    if FRACTIONAL_INTENSITY:
+        print(f"Total intensity Σ(R+G+B)A is {intensity}")
+    else:
+        print(f"Black area (total) is {round(areaBlackTotal)} pixels")
+        print(f"Non-black area (system) is {round(areaBlackSystem)} pixels")
+        print(f"Black area (watchface) is {round(areaBlackWatchface)} pixels")
+        print(f"Non-black area (watchface) is {round(areaNonBlackWatchface)} pixels")
 
 scale = float(im.width) / WATCHFACE_DIMENSIONS
 

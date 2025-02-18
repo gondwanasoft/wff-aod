@@ -27,11 +27,13 @@ If `source` is unspecified, `aod.py` will attempt to capture a screenshot from a
 
 ## Android Studio Integration
 
-In Android Studio, click the `Run/Debug Configurations` drop-down and select `Edit Configurations...`.
+If you use Android Studio for your project, you can optionally configure Android Studio to run the script. To do so:
 
-Click the `Add New Configuration` button and select `Shell Script`.
+* In Android Studio, click the `Run/Debug Configurations` drop-down and select `Edit Configurations...`.
 
-Configure the script like this (but adapted to your folder locations):
+* Click the `Add New Configuration` button and select `Shell Script`.
+
+* Configure the script like this (but adapted to your folder locations):
 
 ![Script configuration](studio-config.png)
 

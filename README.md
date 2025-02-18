@@ -8,7 +8,7 @@ Command-line tool for estimating AOD compliance of [Wear OS Watch Face Format](h
 
 * Python's `pillow` extension (install with `pip install pillow`).
 
-* To capture screenshots using `adb`, the `adb` executable needs to be accessible via the `PATH` environment variable, or via the `ANDROID_HOME` environment variable (in subdirectory `platform-tools`).
+* <a id="adb"></a>To capture screenshots using `adb`, the `adb` executable needs to be accessible via the `PATH` environment variable, or via the `ANDROID_HOME` environment variable (in subdirectory `platform-tools`).
 
 ## Usage
 
@@ -24,6 +24,21 @@ aod.py aod.py [-h] [-s] [-n] [-b B] [-c] [-v] [source]
     -v          show program's version number and exit
 
 If `source` is unspecified, `aod.py` will attempt to capture a screenshot from a connected device/emulator using `adb`. If it succeeds, the screenshot will be saved as `adb.png`. You can inspect that image to verify that the correct screenshot was obtained. `adb.png` will be overwritten when required; if you want to keep any such image, move/copy/rename it before rerunning `aod.py`.
+
+## Android Studio Integration
+
+In Android Studio, click the `Run/Debug Configurations` drop-down and select `Edit Configurations...`.
+
+Click the `Add New Configuration` button and select `Shell Script`.
+
+Configure the script like this (but adapted to your folder locations):
+
+![Script configuration](studio-config.png)
+
+You should now be able to check AOD compliance using Android Studio's `Run` button. This won't rebuild or rerun your project, but will display `aod.py`'s output in Android Studio's Terminal tool window.
+
+> [!Note]
+> When used in this way, the script relies on `adb`. If `adb` can't be found, see [here](#adb).
 
 ## Assumptions
 
@@ -56,3 +71,9 @@ If you want to specify your own bleed factor, use the `-b` command-line option.
 * Doesn't support rectangular images; *eg*, from "Wear OS Rectangular" AVD.
 
 * Doesn't support greyscale-formatted images.
+
+## Acknowledgements
+
+* Concept and initial code is based on Grégoire Sage's Fitbit AOD utility.
+
+* Android Studio integration is based on [Turtlepaw's Clockwork](https://clockwork-pkg.pages.dev/guides/android-studio).
